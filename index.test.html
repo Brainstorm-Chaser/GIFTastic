@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Exotic Car Search</title>
+</head>
+
+<body>
+
+  <div class = "cars-button-view">cars button view</div>
+
+  <div class="container">
+    <h1>Exotic Car Search</h1>
+
+    <form id="car-form">
+      <h3 ="car-input">Add a new Exotic Car Here: </h3>
+      <input type="text" id="car-input"><br>
+
+      <button id="add-car" type="button" value="Add a new Car Here">Submit</button>
+
+    </form>
+
+<!-- cars will get dumped here -->
+<div class = "show-cars"></div>
+<!-- cars will get dumped here -->
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    var carsArray = ["ferrari", "lambourghini", "porsche", "bmw", "mclaren"]
+
+    $(".carListButton").on("click", function(event) { 
+      
+        event.preventDefault();
+        // console.log("hello");
+
+        // This line will grab the text from the input box
+        var carClick = $(this).val().trim();
+               // The car from the textbox is then added to our array
+
+      });
+
+
+    function renderButtons() {      
+
+        // Deleting the car buttons prior to adding new movie buttons
+        // (this is necessary otherwise we will have repeat buttons)
+        $(".cars-button-view").empty();
+
+   
+        for (var i = 0; i < carsArray.length; i++) {
+
+
+         
+          var newButton = $("<button>");
+          newButton.attr("class", "carListButton");
+
+       
+          newButton.text(carsArray[i]);
+          console.log(newButton)
+          // Adding the button to the HTML
+          $(".cars-button-view").append(newButton);
+
+        }
+  }
+
+    $(document).on("click", "#add-car", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+        event.preventDefault();
+        // console.log("hello");
+
+        // This line will grab the text from the input box
+        var carClick = $("#car-input").val().trim();
+               // The car from the textbox is then added to our array
+        carsArray.push(carClick);
+        // console.log(carsArray)
+
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        carClick + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      // Performing an AJAX request with the queryURL
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        // After data comes back from the request
+        .done(function(response) {
+                      
+
+          var results = response.data;
+
+          // Looping through each result item
+          for (var i = 0; i < results.length; i++) {
+           
+
+
+          var carDiv = $("<div>");
+
+          // console.log(carDiv);           
+
+          var carImage = $("<img>");
+          carImage.attr("src", results[i].images.fixed_height.url);
+
+          
+            // Setting the src attribute of the image to a property pulled off the result item
+                 
+            carDiv.prepend(carImage);
+            $(".show-cars").append(carDiv);
+            // html("show cars here")
+
+
+       renderButtons();
+      }
+    });
+
+        
+  });
+
+   renderButtons();
+
+  </script>
+</div>
+</body>
+
+</html>
