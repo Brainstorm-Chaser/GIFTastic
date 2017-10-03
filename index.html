@@ -37,12 +37,10 @@
         // console.log("hello");
 
         // This line will grab the text from the input box
-        for (var i = 0; i < carsArray.length; i++)
-        var carClick = this.text(carsArray[i].val().trim());
-        runQuery(carClick);
+        var carClick = $(this).val().trim();
+               // The car from the textbox is then added to our array
 
       });
-        
 
 
     function renderButtons() {      
@@ -58,7 +56,6 @@
          
           var newButton = $("<button>");
           newButton.attr("class", "carListButton");
-          newButton.attr("id", "value");
 
        
           newButton.text(carsArray[i]);
@@ -69,11 +66,17 @@
         }
   }
 
-    function runQuery(str){
+    $(document).on("click", "#add-car", function(event) {
+        // event.preventDefault() prevents the form from trying to submit itself.
+        // We're using a form so that the user can hit enter instead of clicking the button if they want
+        event.preventDefault();
+        // console.log("hello");
 
-        var carClick = this.str
-               // console.log(carClick);
+        // This line will grab the text from the input box
+        var carClick = $("#car-input").val().trim();
+               // The car from the textbox is then added to our array
         carsArray.push(carClick);
+        // console.log(carsArray)
 
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         carClick + "&api_key=dc6zaTOxFJmzC&limit=10";
@@ -89,46 +92,57 @@
 
           var results = response.data;
 
+
           // Looping through each result item
           for (var i = 0; i < results.length; i++) {
+            console.log(results[i]);
+            console.log(results[i]);
            
 
 
           var carDiv = $("<div>");
-
+          
           // console.log(carDiv);           
 
+        
           var carImage = $("<img>");
           carImage.attr("src", results[i].images.fixed_height.url);
+          
+          carImage.attr("class", "gif");
+         
+          carImage.attr("data-still", results[i].images.fixed_height_still.url);
+          carImage.attr("data-animate", results[i].images.fixed_height.url);
+          carImage.attr("data-state", "still");
+          
+          $(".gif").on("click", function(){
+          
+
+            var state = carImage.attr("data-state");
+            
+
+            if (state === "still") {
+            carImage.attr("src", carImage.attr("data-animate"));
+            carImage.attr("data-state", "animate");
+            } else {
+            carImage.attr("src", carImage.attr("data-still"));
+            carImage.attr("data-state", "still");
+            }
+          });
 
           
             // Setting the src attribute of the image to a property pulled off the result item
                  
-          carDiv.prepend(carImage);
+            carDiv.prepend(carImage);
             $(".show-cars").append(carDiv);
             // html("show cars here")
-      };
+
+
+       renderButtons();
+      }
     });
-  };
-
-    $(document).on("click", "#add-car", ".carListButton", function(event) {
-        // event.preventDefault() prevents the form from trying to submit itself.
-        // We're using a form so that the user can hit enter instead of clicking the button if they want
-        event.preventDefault();
-        // console.log("hello");
-
-        // This line will grab the text from the input box
-        var carClick = $("#car-input").val().trim();
-               // The car from the textbox is then added to our array
-        carsArray.push(carClick);
-        // console.log(carsArray)
 
         
-        runQuery(carClick);
-       renderButtons();
-
-    });
-      
+  });
 
    renderButtons();
 
